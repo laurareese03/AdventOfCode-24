@@ -34,22 +34,34 @@ def check_down(i,j):
     return True
   return False
 
+def check_x_mas(i,j):
+  if i == 0 or i >= np.shape(wordsearch)[0] -1 or j == 0 or j >= len(wordsearch[0]) -1:
+    return False
+  word_one = wordsearch[i-1][j-1] + wordsearch[i+1][j+1]
+  word_two = wordsearch[i+1][j-1] + wordsearch[i-1][j+1]
+  if (word_one == 'MS' or word_one == 'SM') and (word_two == 'MS' or word_two == 'SM'):
+    return True
+  return False
+
 xmas_count = 0
-vertical_count = 0
-horizontal_count = 0
-left_up_diag_count = 0
-right_up_diag_count = 0
 # nested for loops whoooooo
 for i in range(np.shape(wordsearch)[0]):
   for j in range(len(wordsearch[0])):
     if wordsearch[i][j] == 'X' or wordsearch[i][j] == 'S':
       if check_up_diag(i,j):
-        right_up_diag_count += 1
+        xmas_count += 1
       if check_forward(i,j):
-        horizontal_count += 1
+        xmas_count += 1
       if check_down_diag(i,j):
-        left_up_diag_count += 1
+        xmas_count += 1
       if check_down(i,j):
-        vertical_count += 1
+        xmas_count += 1
+print(xmas_count)
 
-print(horizontal_count+vertical_count+left_up_diag_count+right_up_diag_count)
+# x-mas search :|
+x_mas_count = 0
+for i in range(np.shape(wordsearch)[0]):
+  for j in range(len(wordsearch[0])):
+    if wordsearch[i][j] == 'A' and check_x_mas(i,j):
+        x_mas_count += 1
+print(x_mas_count)
