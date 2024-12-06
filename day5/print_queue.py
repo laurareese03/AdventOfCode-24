@@ -2,7 +2,7 @@ lines = open('page_ordering.txt').read().split('\n\n')
 page_orders = lines[0].split('\n')
 pages = lines[1].split('\n')
 
-# orderings dict tracts all pages that should be smaller than the current page
+# orderings dict tracts all pages that should be larger than the current page
 orderings = {'13': []}
 for order in page_orders:
   comp = order.split('|')
@@ -14,11 +14,13 @@ for order in page_orders:
 part_b_pages = []
 # brute forcing because the orders in a cycle! wtf!
 page_total = 0
-complete = True
 for page in pages:
   complete = True
   page = page.split(',')
   for i in range(len(page)):
+    # for every index of the page list, 
+    # check all previous pages against the current page's afters
+    # if set is nonzero, we're out of order
     if len(set(page[:i]).intersection(set(orderings[page[i]]))) != 0:
       complete = False
       part_b_pages.append(page)
@@ -29,21 +31,11 @@ print(page_total)
 
 sorted_page_total = 0
 for page in part_b_pages:
-  page_orderings = {}
+  exact_order = [None]*len(page)
   for p in page:
-    page_orderings[p] = set(page).intersection(set(orderings[p]))
-    
-  # lifted almost exactly from my initial attempt at part a lol
-  # sometimes being goofy pays off!
-  exact_order = []
-  for i in range(len(page_orderings)):
-    for order in page_orderings:
-      if len(page_orderings[order])  == len(exact_order) + 1:
-        exact_order.append(order)
-  for order in page_orderings:
-    if len(page_orderings[order]) == 1 and page_orderings[order] not in exact_order:
-        exact_order.insert(0, str(list(page_orderings[order])[0]))
+    # total the number of pages greater than each page and add that page to the sorted array at that index
+    index = len(set(page).intersection(set(orderings[p])))
+    exact_order[index] = p
   sorted_page_total += int(exact_order[(len(exact_order)-1)//2])
-
 # part b
 print(sorted_page_total)
