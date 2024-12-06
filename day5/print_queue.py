@@ -2,30 +2,24 @@ lines = open('page_ordering.txt').read().split('\n\n')
 page_orders = lines[0].split('\n')
 pages = lines[1].split('\n')
 
+# orderings dict tracts all pages that should be smaller than the current page
 orderings = {}
-
 for order in page_orders:
   comp = order.split('|')
   try:
-    orderings[comp[1]].append(comp[0])
+    orderings[comp[0]].append(comp[1])
   except:
-    orderings[comp[1]] = [comp[0]]
+    orderings[comp[0]] = [comp[1]]
 
-# assumes one exact order of page combos -> real input looks a lil scarier like we might need 2+ cycles
-exact_order = []
-for i in range(len(orderings)):
-  for order in orderings:
-    if len(orderings[order])  == len(exact_order) + 1:
-      exact_order.append(order)
-for order in orderings:
-  if len(orderings[order]) == 1 and orderings[order][0] not in exact_order:
-      exact_order.insert(0, orderings[order][0])
-
-# we can probably assuming no pages are repeating! I'm dumb!
+# brute forcing because the orders in a cycle! wtf!
 page_total = 0
+complete = True
 for page in pages:
+  complete = True
   page = page.split(',')
-  intersection = [x for x in exact_order if x in page]
-  if page == intersection:
-    page_total += int(page[len(page)//2])
+  for i in range(len(page)):
+    if len(set(page[:i]).intersection(set(orderings[page[i]]))) != 0:
+      complete = False
+      break
+  if complete: page_total += int(page[(len(page)-1)//2])
 print(page_total)
