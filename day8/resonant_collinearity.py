@@ -20,15 +20,32 @@ for antennas in antenna_type:
   for i in range(len(posts[0])-1):
     for j in range(i+1,len(posts[0])):
       vert, horz = get_line_distance((posts[0][i], posts[1][i]), (posts[0][j], posts[1][j]))
-      print(vert, horz)
-      if vert % 3 == 0 and horz % 3 == 0:
-        print('here')
-      if posts[0][j] + vert < len(grid) and posts[0][j] + vert >= 0 and posts[1][j] + horz < len(grid[0]) and posts[1][j] + horz >= 0:
+      if 0 <= posts[0][j] + vert < len(grid) and 0 <= posts[1][j] + horz < len(grid[0]):
         current_ant_points.add(((posts[0][j] + vert).item(), (posts[1][j] + horz).item()))
-      if posts[0][i] - vert >= 0 and posts[0][i] - vert < len(grid) and posts[1][i] - horz >= 0 and posts[1][i] - horz < len(grid):
-        print(posts[0][i] - vert,posts[1][i] - horz, 'check negs')
+      if 0 <= posts[0][i] - vert < len(grid) and 0 <= posts[1][i] - horz < len(grid[0]):
         current_ant_points.add(((posts[0][i] - vert).item(), (posts[1][i] - horz).item()))
-
   anti = anti.union(current_ant_points)
+# part a
+print(len(anti))
 
+for antennas in antenna_type:
+  posts = np.nonzero(grid == antennas)
+  current_ant_points = set()
+  for i in range(len(posts[0])-1):
+    for j in range(i+1,len(posts[0])):
+      vert, horz = get_line_distance((posts[0][i], posts[1][i]), (posts[0][j], posts[1][j]))
+      vert_mult, horz_mult = vert, horz
+      while 0 <= posts[0][j] + vert < len(grid) and 0 <= posts[1][j] + horz < len(grid[0]):
+        current_ant_points.add(((posts[0][j] + vert).item(), (posts[1][j] + horz).item()))
+        vert += vert_mult
+        horz += horz_mult
+      vert, horz = vert_mult, horz_mult
+      while 0 <= posts[0][i] - vert < len(grid) and 0 <= posts[1][i] - horz < len(grid[0]):
+        current_ant_points.add(((posts[0][i] - vert).item(), (posts[1][i] - horz).item()))
+        vert += vert_mult
+        horz += horz_mult
+    for i in range(len(posts[0])):
+      anti.add(((posts[0][i]).item(), (posts[1][i]).item()))
+  anti = anti.union(current_ant_points)
+# part b
 print(len(anti))
