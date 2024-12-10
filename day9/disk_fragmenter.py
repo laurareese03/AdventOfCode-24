@@ -20,7 +20,7 @@ for index in indices:
     next_int = blocks.pop(-1)
   try:
     blocks[index] = next_int
-  except:
+  except e:
     blocks.append(next_int) # in case we accidentally pop too far and remove the last index
 
 checksum = 0
