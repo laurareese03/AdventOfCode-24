@@ -7,20 +7,21 @@ maze_b = maze.copy()
 start_index = np.nonzero(maze == 'S')
 start_index = (start_index[0][0].item(), start_index[1][0].item())
 end_index = np.nonzero(maze == 'E')
+maze[end_index] = '.'
 end_index = (end_index[0][0].item(), end_index[1][0].item())
 
 def get_next_points(index):
   points = []
-  if maze[index[0]-1, index[1]] == '.' or maze[index[0]-1, index[1]] == 'E': # up
+  if maze[index[0]-1, index[1]] == '.': # up
     points.append(((index[0]-1, index[1]), 0))
     maze[index[0]-1, index[1]] = 'X'
-  if maze[index[0], index[1]+1] == '.' or maze[index[0], index[1]+1] == 'E': # right
+  if maze[index[0], index[1]+1] == '.': # right
     points.append(((index[0], index[1]+1), 1))
     maze[index[0], index[1]+1] = 'X'
-  if maze[index[0]+1, index[1]] == '.' or maze[index[0]+1, index[1]] == 'E': # down
+  if maze[index[0]+1, index[1]] == '.': # down
     points.append(((index[0]+1, index[1]), 2))
     maze[index[0]+1, index[1]] = 'X'
-  if maze[index[0], index[1]-1] == '.' or maze[index[0], index[1]-1] == 'E': # left
+  if maze[index[0], index[1]-1] == '.': # left
     points.append(((index[0], index[1]-1), 3))
     maze[index[0], index[1]-1] = 'X'
   return points
@@ -28,19 +29,11 @@ def get_next_points(index):
 def get_next_points_b(index, steps):
   points = []
   steps = str(steps).zfill(2)
-  print(maze[index[0]-1, index[1]] == str(steps), index, steps, maze[index[0]-1, index[1]])
-  if maze[index[0]-1, index[1]] == '.' or maze[index[0]-1, index[1]] == str(steps) or maze[index[0]-1, index[1]] == 'E': # up
-    points.append(((index[0]-1, index[1]), 0))
-    maze[index[0]-1, index[1]] = steps
-  if maze[index[0], index[1]+1] == '.' or maze[index[0], index[1]+1] == str(steps) or maze[index[0], index[1]+1] == 'E': # right
-    points.append(((index[0], index[1]+1), 1))
-    maze[index[0], index[1]+1] = steps
-  if maze[index[0]+1, index[1]] == '.' or maze[index[0]+1, index[1]] == str(steps) or maze[index[0]+1, index[1]] == 'E': # down
-    points.append(((index[0]+1, index[1]), 2))
-    maze[index[0]+1, index[1]] = steps
-  if maze[index[0], index[1]-1] == '.' or maze[index[0], index[1]-1] == str(steps) or maze[index[0], index[1]-1] == 'E': # left
-    points.append(((index[0], index[1]-1), 3))
-    maze[index[0], index[1]-1] = steps
+  mi = [(index[0]-1, index[1]), (index[0], index[1]+1), (index[0]+1, index[1]), (index[0], index[1]-1)]
+  for i in range(len(mi)):
+    if maze[mi[i]] != '#' and int(maze[mi[i]] >= steps) or maze[mi[i]] == '.':
+      points.append((mi[i], i))
+      maze[mi[i]] = steps
   return points
 
 min_score = 0
